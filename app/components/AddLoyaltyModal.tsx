@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { LoyaltyAccount } from '@/types';
 import { SUGGESTED_LOYALTY_PROGRAMMES } from '@/lib/constants';
 import { uid } from '@/lib/utils';
+import SelectWithOther from './SelectWithOther';
 
 interface Props {
   initial?: LoyaltyAccount;
@@ -11,25 +12,22 @@ interface Props {
   onClose: () => void;
 }
 
-const empty = (): Omit<LoyaltyAccount, 'id'> => ({
-  programmeName: '',
-  miles: 0,
-  expiryDate: '',
-});
+const INPUT_CLASS =
+  'w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors';
 
 export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
-  const [form, setForm] = useState<Omit<LoyaltyAccount, 'id'>>(initial ?? empty());
-
-  useEffect(() => {
-    if (initial) setForm(initial);
-  }, [initial]);
-
-  const set = (k: keyof typeof form, v: string | number) =>
-    setForm((f) => ({ ...f, [k]: v }));
+  const [programmeName, setProgrammeName] = useState(initial?.programmeName ?? '');
+  const [miles, setMiles] = useState(initial?.miles ?? 0);
+  const [expiryDate, setExpiryDate] = useState(initial?.expiryDate ?? '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ ...form, id: initial?.id ?? uid() });
+    onSave({
+      id: initial?.id ?? uid(),
+      programmeName,
+      miles,
+      expiryDate: expiryDate || undefined,
+    });
     onClose();
   };
 
@@ -58,17 +56,14 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
             <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
               Loyalty Programme
             </label>
-            <input
-              list="loyalty-prog-list"
-              value={form.programmeName}
-              onChange={(e) => set('programmeName', e.target.value)}
-              placeholder="e.g. KrisFlyer"
+            <SelectWithOther
+              value={programmeName}
+              onChange={setProgrammeName}
+              options={SUGGESTED_LOYALTY_PROGRAMMES}
+              placeholder="Select programme…"
+              customPlaceholder="Enter programme name"
               required
-              className="w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors"
             />
-            <datalist id="loyalty-prog-list">
-              {SUGGESTED_LOYALTY_PROGRAMMES.map((l) => <option key={l} value={l} />)}
-            </datalist>
           </div>
 
           <div>
@@ -78,11 +73,11 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
             <input
               type="number"
               min={0}
-              value={form.miles || ''}
-              onChange={(e) => set('miles', Number(e.target.value))}
+              value={miles || ''}
+              onChange={(e) => setMiles(Number(e.target.value))}
               placeholder="0"
               required
-              className="w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors"
+              className={INPUT_CLASS}
             />
           </div>
 
@@ -93,9 +88,9 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
             </label>
             <input
               type="date"
-              value={form.expiryDate ?? ''}
-              onChange={(e) => set('expiryDate', e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
+              className={INPUT_CLASS}
             />
           </div>
 

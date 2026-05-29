@@ -174,6 +174,8 @@ export default function Page() {
       {bankModal.open && (
         <AddBankModal
           initial={'editing' in bankModal ? bankModal.editing : undefined}
+          defaultLoyaltyProgramme={wallet.loyalty[0]?.programmeName ?? 'KrisFlyer'}
+          existingLoyaltyProgrammes={wallet.loyalty.map((l) => l.programmeName)}
           onSave={'editing' in bankModal && bankModal.editing ? wallet.updateBank : wallet.addBank}
           onClose={() => setBankModal({ open: false })}
         />
