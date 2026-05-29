@@ -10,6 +10,7 @@ import BankCard from '@/components/BankCard';
 import LoyaltyCard from '@/components/LoyaltyCard';
 import AddBankModal from '@/components/AddBankModal';
 import AddLoyaltyModal from '@/components/AddLoyaltyModal';
+import SyncModal from '@/components/SyncModal';
 
 type BankModal = { open: false } | { open: true; editing?: BankAccount };
 type LoyaltyModal = { open: false } | { open: true; editing?: LoyaltyAccount };
@@ -18,6 +19,7 @@ export default function Page() {
   const wallet = useWallet();
   const [bankModal, setBankModal] = useState<BankModal>({ open: false });
   const [loyaltyModal, setLoyaltyModal] = useState<LoyaltyModal>({ open: false });
+  const [syncOpen, setSyncOpen] = useState(false);
 
   if (!wallet.ready) return null;
 
@@ -25,7 +27,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <Header banks={wallet.banks} loyalty={wallet.loyalty} />
+      <Header banks={wallet.banks} loyalty={wallet.loyalty} onSync={() => setSyncOpen(true)} />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <SummaryStats banks={wallet.banks} loyalty={wallet.loyalty} />
@@ -182,6 +184,15 @@ export default function Page() {
           initial={'editing' in loyaltyModal ? loyaltyModal.editing : undefined}
           onSave={'editing' in loyaltyModal && loyaltyModal.editing ? wallet.updateLoyalty : wallet.addLoyalty}
           onClose={() => setLoyaltyModal({ open: false })}
+        />
+      )}
+
+      {syncOpen && (
+        <SyncModal
+          banks={wallet.banks}
+          loyalty={wallet.loyalty}
+          onImport={(b, l) => wallet.replaceAll(b, l)}
+          onClose={() => setSyncOpen(false)}
         />
       )}
     </div>

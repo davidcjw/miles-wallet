@@ -37,5 +37,6 @@ export function useWallet() {
     addLoyalty: (a: LoyaltyAccount) => setLoyalty((p) => [...p, a]),
     updateLoyalty: (a: LoyaltyAccount) => setLoyalty((p) => p.map((x) => (x.id === a.id ? a : x))),
     deleteLoyalty: (id: string) => setLoyalty((p) => p.filter((x) => x.id !== id)),
+    replaceAll: (b: BankAccount[], l: LoyaltyAccount[]) => { setBanks(b); setLoyalty(l); },
   };
 }

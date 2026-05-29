@@ -7,9 +7,10 @@ import { BankAccount, LoyaltyAccount } from '@/types';
 interface Props {
   banks: BankAccount[];
   loyalty: LoyaltyAccount[];
+  onSync: () => void;
 }
 
-export default function Header({ banks, loyalty }: Props) {
+export default function Header({ banks, loyalty, onSync }: Props) {
   const { isDark, toggle } = useDarkMode();
 
   return (
@@ -33,6 +34,19 @@ export default function Header({ banks, loyalty }: Props) {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={onSync}
+            aria-label="Sync wallet"
+            className="p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+              <rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+              <rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" strokeWidth="1.4" />
+              <path d="M9 11.5h2M11 9.5v2M13 11.5h.5M11 13.5v.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            </svg>
+          </button>
+
           <button
             onClick={() => exportToCSV(banks, loyalty)}
             disabled={banks.length === 0 && loyalty.length === 0}
