@@ -9,6 +9,14 @@ export const SUGGESTED_BANKS = [
   'American Express',
 ];
 
+export const SUPPORTED_PROGRAMMES = [
+  'KrisFlyer',
+  'Asia Miles',
+  'Enrich Miles',
+  'Avios',
+  'Flying Blue',
+];
+
 export const SUGGESTED_LOYALTY_PROGRAMMES = [
   'KrisFlyer',
   'Asia Miles',
@@ -31,14 +39,59 @@ export const CARD_SUGGESTIONS: Record<string, string[]> = {
   Maybank: ['Maybank Horizon Visa Signature', 'Maybank World Mastercard'],
 };
 
-// Suggested conversion rates: points per 1 mile
-export const SUGGESTED_RATES: Record<string, Record<string, number>> = {
-  DBS: { KrisFlyer: 3, 'Asia Miles': 3 },
-  Citibank: { KrisFlyer: 3.25, 'Asia Miles': 3.25 },
-  UOB: { KrisFlyer: 2, 'Asia Miles': 2 },
-  OCBC: { KrisFlyer: 1.6 },
-  'Standard Chartered': { KrisFlyer: 2.5 },
-  HSBC: { KrisFlyer: 2.5 },
-  'American Express': { KrisFlyer: 2.5 },
-  Maybank: { KrisFlyer: 5 },
+/**
+ * Points required per 1 mile for each bank → programme combination.
+ * Sources: bank transfer partner pages, milelion.com, seedly.sg (as of 2025).
+ * Banks not listed for a programme don't support direct transfer to it.
+ */
+export const CONVERSION_RATES: Record<string, Record<string, number>> = {
+  DBS: {
+    KrisFlyer: 3,
+    'Asia Miles': 3,
+    'Enrich Miles': 3,
+    Avios: 3,
+    'Flying Blue': 3,
+  },
+  OCBC: {
+    KrisFlyer: 2.5,
+    'Asia Miles': 2.5,
+    'Enrich Miles': 2.5,
+    Avios: 2.5,
+  },
+  UOB: {
+    KrisFlyer: 2,
+    'Asia Miles': 2,
+    Avios: 2,
+    'Flying Blue': 2,
+  },
+  Citibank: {
+    KrisFlyer: 3.25,
+    'Asia Miles': 3.25,
+    Avios: 3.25,
+    'Flying Blue': 3.25,
+  },
+  'Standard Chartered': {
+    KrisFlyer: 2.5,
+    'Asia Miles': 2.5,
+    'Enrich Miles': 2.5,
+    Avios: 2.5,
+    'Flying Blue': 2.5,
+  },
+  HSBC: {
+    KrisFlyer: 2.5,
+    'Asia Miles': 2.5,
+    'Enrich Miles': 2.5,
+    Avios: 2.5,
+    'Flying Blue': 2.5,
+  },
+  'American Express': {
+    KrisFlyer: 2.5,
+    'Asia Miles': 2.5,
+    Avios: 2.5,
+    'Flying Blue': 2.5,
+  },
+  Maybank: {
+    KrisFlyer: 5,
+    'Asia Miles': 5,
+  },
 };

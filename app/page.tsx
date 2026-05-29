@@ -27,10 +27,20 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <Header banks={wallet.banks} loyalty={wallet.loyalty} onSync={() => setSyncOpen(true)} />
+      <Header
+        banks={wallet.banks}
+        loyalty={wallet.loyalty}
+        selectedProgramme={wallet.selectedProgramme}
+        onSync={() => setSyncOpen(true)}
+      />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <SummaryStats banks={wallet.banks} loyalty={wallet.loyalty} />
+        <SummaryStats
+          banks={wallet.banks}
+          loyalty={wallet.loyalty}
+          selectedProgramme={wallet.selectedProgramme}
+          onSelectProgramme={wallet.setSelectedProgramme}
+        />
 
         {isEmpty && (
           <div className="text-center py-16">
@@ -100,6 +110,7 @@ export default function Page() {
                       key={b.id}
                       account={b}
                       index={i}
+                      selectedProgramme={wallet.selectedProgramme}
                       onEdit={(a) => setBankModal({ open: true, editing: a })}
                       onDelete={wallet.deleteBank}
                     />
@@ -152,7 +163,7 @@ export default function Page() {
             {/* Mobile export */}
             <div className="sm:hidden pt-2 pb-4">
               <button
-                onClick={() => exportToCSV(wallet.banks, wallet.loyalty)}
+                onClick={() => exportToCSV(wallet.banks, wallet.loyalty, wallet.selectedProgramme)}
                 className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -174,8 +185,6 @@ export default function Page() {
       {bankModal.open && (
         <AddBankModal
           initial={'editing' in bankModal ? bankModal.editing : undefined}
-          defaultLoyaltyProgramme={wallet.loyalty[0]?.programmeName ?? 'KrisFlyer'}
-          existingLoyaltyProgrammes={wallet.loyalty.map((l) => l.programmeName)}
           onSave={'editing' in bankModal && bankModal.editing ? wallet.updateBank : wallet.addBank}
           onClose={() => setBankModal({ open: false })}
         />

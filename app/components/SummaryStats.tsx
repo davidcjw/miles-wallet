@@ -1,24 +1,27 @@
 'use client';
 
 import { BankAccount, LoyaltyAccount } from '@/types';
+import { CONVERSION_RATES, SUPPORTED_PROGRAMMES } from '@/lib/constants';
 import { milesFromPoints, fmt, getDaysUntilExpiry, getExpiryStatus } from '@/lib/utils';
 
 interface Props {
   banks: BankAccount[];
   loyalty: LoyaltyAccount[];
+  selectedProgramme: string;
+  onSelectProgramme: (p: string) => void;
 }
 
-export default function SummaryStats({ banks, loyalty }: Props) {
-  const byProgramme: Record<string, number> = {};
-  for (const b of banks) {
-    const miles = milesFromPoints(b.points, b.conversionRate);
-    byProgramme[b.loyaltyProgramme] = (byProgramme[b.loyaltyProgramme] ?? 0) + miles;
-  }
-  for (const l of loyalty) {
-    byProgramme[l.programmeName] = (byProgramme[l.programmeName] ?? 0) + l.miles;
-  }
+export default function SummaryStats({ banks, loyalty, selectedProgramme, onSelectProgramme }: Props) {
+  const bankMiles = banks.reduce((sum, b) => {
+    const rate = CONVERSION_RATES[b.bankName]?.[selectedProgramme];
+    return sum + (rate ? milesFromPoints(b.points, rate) : 0);
+  }, 0);
 
-  const totalMiles = Object.values(byProgramme).reduce((a, b) => a + b, 0);
+  const loyaltyMiles = loyalty
+    .filter((l) => l.programmeName === selectedProgramme)
+    .reduce((sum, l) => sum + l.miles, 0);
+
+  const totalMiles = bankMiles + loyaltyMiles;
 
   const allExpiries = [
     ...banks.filter((b) => b.expiryDate).map((b) => ({ label: b.cardName || b.bankName, date: b.expiryDate! })),
@@ -28,8 +31,6 @@ export default function SummaryStats({ banks, loyalty }: Props) {
   const nextExpiry = allExpiries[0];
   const nextDays = nextExpiry ? getDaysUntilExpiry(nextExpiry.date) : null;
   const nextStatus = nextExpiry ? getExpiryStatus(nextExpiry.date) : null;
-
-  const programmes = Object.entries(byProgramme).sort((a, b) => b[1] - a[1]);
 
   if (banks.length === 0 && loyalty.length === 0) return null;
 
@@ -44,10 +45,28 @@ export default function SummaryStats({ banks, loyalty }: Props) {
       <div className="pointer-events-none absolute top-1/2 right-1/4 w-24 h-24 rounded-full bg-white/[0.03]" />
 
       <div className="relative px-7 pt-8 pb-7">
-        {/* Label */}
-        <p className="text-blue-200 text-xs font-medium tracking-widest uppercase mb-3">
-          Total Miles Equivalent
-        </p>
+        {/* Programme selector */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="relative">
+            <select
+              value={selectedProgramme}
+              onChange={(e) => onSelectProgramme(e.target.value)}
+              className="appearance-none bg-white/15 hover:bg-white/20 text-white text-xs font-semibold tracking-widest uppercase pr-7 pl-3 py-1.5 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/30 transition-colors"
+            >
+              {SUPPORTED_PROGRAMMES.map((p) => (
+                <option key={p} value={p} className="bg-indigo-700 text-white normal-case tracking-normal font-normal">
+                  {p}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white/60">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path d="M2 3.5l3 3 3-3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+          <span className="text-blue-200 text-xs font-medium tracking-widest uppercase">Miles</span>
+        </div>
 
         {/* Hero number */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
@@ -80,17 +99,21 @@ export default function SummaryStats({ banks, loyalty }: Props) {
           )}
         </div>
 
-        {/* Programme breakdown */}
-        {programmes.length > 0 && (
+        {/* Breakdown: bank points converted + loyalty balance */}
+        {(bankMiles > 0 || loyaltyMiles > 0) && (
           <div className="mt-7 pt-5 border-t border-white/10 flex flex-wrap gap-x-6 gap-y-3">
-            {programmes.map(([name, miles]) => (
-              <div key={name} className="flex flex-col gap-0.5">
-                <p className="text-blue-200 text-xs">{name}</p>
-                <p className="text-white font-semibold text-xl tabular-nums leading-tight">
-                  {fmt(miles)}
-                </p>
+            {bankMiles > 0 && (
+              <div className="flex flex-col gap-0.5">
+                <p className="text-blue-200 text-xs">From bank points</p>
+                <p className="text-white font-semibold text-xl tabular-nums leading-tight">{fmt(bankMiles)}</p>
               </div>
-            ))}
+            )}
+            {loyaltyMiles > 0 && (
+              <div className="flex flex-col gap-0.5">
+                <p className="text-blue-200 text-xs">{selectedProgramme} balance</p>
+                <p className="text-white font-semibold text-xl tabular-nums leading-tight">{fmt(loyaltyMiles)}</p>
+              </div>
+            )}
           </div>
         )}
       </div>

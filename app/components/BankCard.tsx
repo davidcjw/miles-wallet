@@ -1,6 +1,7 @@
 'use client';
 
 import { BankAccount } from '@/types';
+import { CONVERSION_RATES } from '@/lib/constants';
 import { milesFromPoints, fmt } from '@/lib/utils';
 import ExpiryBadge from './ExpiryBadge';
 
@@ -18,12 +19,14 @@ const ACCENT_COLORS = [
 interface Props {
   account: BankAccount;
   index: number;
+  selectedProgramme: string;
   onEdit: (a: BankAccount) => void;
   onDelete: (id: string) => void;
 }
 
-export default function BankCard({ account, index, onEdit, onDelete }: Props) {
-  const miles = milesFromPoints(account.points, account.conversionRate);
+export default function BankCard({ account, index, selectedProgramme, onEdit, onDelete }: Props) {
+  const rate = CONVERSION_RATES[account.bankName]?.[selectedProgramme];
+  const miles = rate ? milesFromPoints(account.points, rate) : null;
   const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
 
   return (
@@ -79,13 +82,19 @@ export default function BankCard({ account, index, onEdit, onDelete }: Props) {
           {fmt(account.points)}
           <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400 ml-1.5">pts</span>
         </p>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
-          ≈{' '}
-          <span className="font-medium text-neutral-700 dark:text-neutral-300">
-            {fmt(miles)} {account.loyaltyProgramme} miles
-          </span>{' '}
-          <span className="text-xs">({account.conversionRate}:1)</span>
-        </p>
+        {miles !== null ? (
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+            ≈{' '}
+            <span className="font-medium text-neutral-700 dark:text-neutral-300">
+              {fmt(miles)} {selectedProgramme} miles
+            </span>{' '}
+            <span className="text-xs">({rate}:1)</span>
+          </p>
+        ) : (
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+            No {selectedProgramme} transfer rate
+          </p>
+        )}
       </div>
 
       <ExpiryBadge expiryDate={account.expiryDate} />

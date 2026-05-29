@@ -1,34 +1,35 @@
 import { BankAccount, LoyaltyAccount } from '@/types';
+import { CONVERSION_RATES } from './constants';
 import { getDaysUntilExpiry, milesFromPoints } from './utils';
 
 function row(cells: string[]): string {
   return cells.map((c) => `"${c.replace(/"/g, '""')}"`).join(',');
 }
 
-export function exportToCSV(banks: BankAccount[], loyalty: LoyaltyAccount[]) {
+export function exportToCSV(banks: BankAccount[], loyalty: LoyaltyAccount[], selectedProgramme: string) {
   const headers = [
     'Type',
     'Institution',
     'Card / Programme',
     'Points / Miles',
-    'Conversion Rate (pts per mile)',
-    'Miles Equivalent',
+    `${selectedProgramme} Miles Equivalent`,
     'Expiry Date',
     'Days Until Expiry',
   ];
 
-  const bankRows = banks.map((b) =>
-    row([
+  const bankRows = banks.map((b) => {
+    const rate = CONVERSION_RATES[b.bankName]?.[selectedProgramme];
+    const miles = rate ? milesFromPoints(b.points, rate) : '';
+    return row([
       'Bank Points',
       b.bankName,
       b.cardName,
       String(b.points),
-      String(b.conversionRate),
-      String(milesFromPoints(b.points, b.conversionRate)),
+      String(miles),
       b.expiryDate ?? '',
       b.expiryDate ? String(getDaysUntilExpiry(b.expiryDate)) : '',
-    ])
-  );
+    ]);
+  });
 
   const loyaltyRows = loyalty.map((l) =>
     row([
@@ -36,8 +37,7 @@ export function exportToCSV(banks: BankAccount[], loyalty: LoyaltyAccount[]) {
       l.programmeName,
       '',
       String(l.miles),
-      '1',
-      String(l.miles),
+      l.programmeName === selectedProgramme ? String(l.miles) : '',
       l.expiryDate ?? '',
       l.expiryDate ? String(getDaysUntilExpiry(l.expiryDate)) : '',
     ])

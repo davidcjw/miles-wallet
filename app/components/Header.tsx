@@ -7,10 +7,11 @@ import { BankAccount, LoyaltyAccount } from '@/types';
 interface Props {
   banks: BankAccount[];
   loyalty: LoyaltyAccount[];
+  selectedProgramme: string;
   onSync: () => void;
 }
 
-export default function Header({ banks, loyalty, onSync }: Props) {
+export default function Header({ banks, loyalty, selectedProgramme, onSync }: Props) {
   const { isDark, toggle } = useDarkMode();
 
   return (
@@ -48,7 +49,7 @@ export default function Header({ banks, loyalty, onSync }: Props) {
           </button>
 
           <button
-            onClick={() => exportToCSV(banks, loyalty)}
+            onClick={() => exportToCSV(banks, loyalty, selectedProgramme)}
             disabled={banks.length === 0 && loyalty.length === 0}
             className="hidden sm:flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >

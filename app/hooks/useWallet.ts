@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { BankAccount, LoyaltyAccount } from '@/types';
 
 const KEY = 'miles-wallet-data';
+const PROG_KEY = 'miles-wallet-programme';
 
 export function useWallet() {
   const [banks, setBanks] = useState<BankAccount[]>([]);
   const [loyalty, setLoyalty] = useState<LoyaltyAccount[]>([]);
+  const [selectedProgramme, setSelectedProgramme] = useState('KrisFlyer');
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -18,6 +20,8 @@ export function useWallet() {
         setBanks(data.banks ?? []);
         setLoyalty(data.loyalty ?? []);
       }
+      const prog = localStorage.getItem(PROG_KEY);
+      if (prog) setSelectedProgramme(prog);
     } catch {}
     setReady(true);
   }, []);
@@ -27,9 +31,16 @@ export function useWallet() {
     localStorage.setItem(KEY, JSON.stringify({ banks, loyalty }));
   }, [banks, loyalty, ready]);
 
+  useEffect(() => {
+    if (!ready) return;
+    localStorage.setItem(PROG_KEY, selectedProgramme);
+  }, [selectedProgramme, ready]);
+
   return {
     banks,
     loyalty,
+    selectedProgramme,
+    setSelectedProgramme,
     ready,
     addBank: (a: BankAccount) => setBanks((p) => [...p, a]),
     updateBank: (a: BankAccount) => setBanks((p) => p.map((x) => (x.id === a.id ? a : x))),

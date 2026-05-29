@@ -1,20 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BankAccount } from '@/types';
-import {
-  SUGGESTED_BANKS,
-  SUGGESTED_LOYALTY_PROGRAMMES,
-  SUGGESTED_RATES,
-  CARD_SUGGESTIONS,
-} from '@/lib/constants';
+import { SUGGESTED_BANKS, CARD_SUGGESTIONS } from '@/lib/constants';
 import { uid } from '@/lib/utils';
 import SelectWithOther from './SelectWithOther';
 
 interface Props {
   initial?: BankAccount;
-  defaultLoyaltyProgramme?: string;
-  existingLoyaltyProgrammes?: string[];
   onSave: (a: BankAccount) => void;
   onClose: () => void;
 }
@@ -22,39 +15,14 @@ interface Props {
 const INPUT_CLASS =
   'w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors';
 
-export default function AddBankModal({
-  initial,
-  defaultLoyaltyProgramme = 'KrisFlyer',
-  existingLoyaltyProgrammes = [],
-  onSave,
-  onClose,
-}: Props) {
+export default function AddBankModal({ initial, onSave, onClose }: Props) {
   const [bankName, setBankName] = useState(initial?.bankName ?? '');
   const [cardName, setCardName] = useState(initial?.cardName ?? '');
   const [points, setPoints] = useState(initial?.points ?? 0);
-  const [loyaltyProgramme, setLoyaltyProgramme] = useState(
-    initial?.loyaltyProgramme ?? defaultLoyaltyProgramme
-  );
-  const [conversionRate, setConversionRate] = useState(initial?.conversionRate ?? 1);
   const [expiryDate, setExpiryDate] = useState(initial?.expiryDate ?? '');
-
-  // Merge user's own programmes (first) with standard suggestions (deduped)
-  const loyaltyOptions = [
-    ...existingLoyaltyProgrammes,
-    ...SUGGESTED_LOYALTY_PROGRAMMES.filter((p) => !existingLoyaltyProgrammes.includes(p)),
-  ];
 
   const cardOptions = bankName ? (CARD_SUGGESTIONS[bankName] ?? []) : [];
 
-  // Auto-fill conversion rate when bank + loyalty combo is known
-  useEffect(() => {
-    if (!initial) {
-      const suggested = SUGGESTED_RATES[bankName]?.[loyaltyProgramme];
-      if (suggested) setConversionRate(suggested);
-    }
-  }, [bankName, loyaltyProgramme, initial]);
-
-  // Reset card name when bank changes (stale card names from another bank)
   const prevBank = initial?.bankName;
   const handleBankChange = (v: string) => {
     setBankName(v);
@@ -68,16 +36,10 @@ export default function AddBankModal({
       bankName,
       cardName,
       points,
-      loyaltyProgramme,
-      conversionRate,
       expiryDate: expiryDate || undefined,
     });
     onClose();
   };
-
-  const milesPreview = points > 0 && conversionRate > 0
-    ? Math.floor(points / conversionRate).toLocaleString()
-    : null;
 
   return (
     <div
@@ -100,7 +62,6 @@ export default function AddBankModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Bank */}
           <div>
             <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
               Bank
@@ -115,7 +76,6 @@ export default function AddBankModal({
             />
           </div>
 
-          {/* Card name — dropdown if bank has suggestions, otherwise text */}
           <div>
             <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
               Card Name
@@ -139,7 +99,6 @@ export default function AddBankModal({
             )}
           </div>
 
-          {/* Points */}
           <div>
             <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
               Points Balance
@@ -155,44 +114,6 @@ export default function AddBankModal({
             />
           </div>
 
-          {/* Loyalty programme */}
-          <div>
-            <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
-              Loyalty Programme
-            </label>
-            <SelectWithOther
-              value={loyaltyProgramme}
-              onChange={setLoyaltyProgramme}
-              options={loyaltyOptions}
-              placeholder="Select programme…"
-              customPlaceholder="Enter programme name"
-              required
-            />
-          </div>
-
-          {/* Conversion rate */}
-          <div>
-            <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
-              Conversion Rate
-              <span className="font-normal text-neutral-400 ml-1">(points per 1 mile)</span>
-            </label>
-            <input
-              type="number"
-              min={0.1}
-              step={0.1}
-              value={conversionRate || ''}
-              onChange={(e) => setConversionRate(Number(e.target.value))}
-              required
-              className={INPUT_CLASS}
-            />
-            {milesPreview && (
-              <p className="mt-1.5 text-xs text-blue-600 dark:text-blue-400 font-medium">
-                = {milesPreview} {loyaltyProgramme || 'miles'}
-              </p>
-            )}
-          </div>
-
-          {/* Expiry */}
           <div>
             <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
               Points Expiry Date

@@ -3,8 +3,6 @@ export interface BankAccount {
   bankName: string;
   cardName: string;
   points: number;
-  loyaltyProgramme: string;
-  conversionRate: number; // points required per 1 mile
   expiryDate?: string; // YYYY-MM-DD
 }
 
