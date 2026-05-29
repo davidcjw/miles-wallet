@@ -84,6 +84,16 @@ export default function SyncModal({ banks, loyalty, onImport, onClose }: Props) 
     rafRef.current = requestAnimationFrame(scanLoop);
   }, [stopCamera]);
 
+  // Attach the stream once the video element is in the DOM (scanState just became 'scanning')
+  useEffect(() => {
+    const video = videoRef.current;
+    if (scanState !== 'scanning' || !video || !streamRef.current) return;
+    video.srcObject = streamRef.current;
+    video.play().catch(() => {});
+    rafRef.current = requestAnimationFrame(scanLoop);
+    return () => { cancelAnimationFrame(rafRef.current); };
+  }, [scanState, scanLoop]);
+
   const startCamera = async () => {
     setScanState('requesting');
     setErrorMsg('');
@@ -92,12 +102,7 @@ export default function SyncModal({ banks, loyalty, onImport, onClose }: Props) 
         video: { facingMode: { ideal: 'environment' } },
       });
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setScanState('scanning');
-      rafRef.current = requestAnimationFrame(scanLoop);
+      setScanState('scanning'); // video element now renders → useEffect attaches the stream
     } catch {
       setScanState('error');
       setErrorMsg('Camera access was denied. Please allow camera access and try again.');
@@ -224,6 +229,7 @@ export default function SyncModal({ banks, loyalty, onImport, onClose }: Props) 
                     ref={videoRef}
                     className="w-full h-full object-cover"
                     playsInline
+                    autoPlay
                     muted
                   />
                   {/* Scanning overlay */}
