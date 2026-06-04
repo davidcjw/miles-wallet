@@ -4,7 +4,7 @@
 
 A minimalist web app for tracking bank credit card points and loyalty programme miles — all in one place, stored locally in your browser.
 
-**Live:** https://miles-wallet.vercel.app
+**Live:** https://miles-wallet.davidcjw.com
 
 ## Features
 
