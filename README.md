@@ -1,6 +1,7 @@
 # Miles Wallet
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+[![AgentReady Score](https://agentready.davidcjw.com/api/badge/davidcjw/miles-wallet)](https://agentready.davidcjw.com/results/davidcjw/miles-wallet)
 
 A minimalist web app for tracking bank credit card points and loyalty programme miles — all in one place, stored locally in your browser.
 
