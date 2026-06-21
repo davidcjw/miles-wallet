@@ -1,31 +1,68 @@
-import type { Metadata } from 'next';
-import { Geist } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
-const geist = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
+const SITE_URL = 'https://miles-wallet.davidcjw.com';
+const DESCRIPTION =
+  'Track your bank credit card points and loyalty programme miles in one place — converted to your chosen airline programme, stored locally in your browser.';
 
 export const metadata: Metadata = {
-  title: 'Miles Wallet',
-  description: 'Track your bank points and loyalty miles in one place.',
+  metadataBase: new URL(SITE_URL),
+  title: 'Miles Wallet — track bank points & loyalty miles',
+  description: DESCRIPTION,
+  applicationName: 'Miles Wallet',
+  alternates: { canonical: '/' },
+  keywords: [
+    'miles tracker',
+    'credit card points',
+    'loyalty miles',
+    'KrisFlyer',
+    'Asia Miles',
+    'Singapore banks',
+    'points to miles converter',
+  ],
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    siteName: 'Miles Wallet',
+    title: 'Miles Wallet — track bank points & loyalty miles',
+    description: DESCRIPTION,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Miles Wallet dashboard' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Miles Wallet — track bank points & loyalty miles',
+    description: DESCRIPTION,
+    images: ['/og-image.png'],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Miles Wallet',
+  url: SITE_URL,
+  description: DESCRIPTION,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
-      <head>
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="min-h-full">
         <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var t = localStorage.getItem('miles-wallet-theme');
-                var d = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (d) document.documentElement.classList.add('dark');
-              } catch(e) {}
-            `,
-          }}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-      </head>
-      <body className="min-h-full">{children}</body>
+        {children}
+      </body>
     </html>
   );
 }

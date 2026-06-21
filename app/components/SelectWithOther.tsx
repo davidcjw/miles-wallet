@@ -2,16 +2,10 @@
 
 import { useState } from 'react';
 
-const SELECT_CLASS =
-  'w-full appearance-none px-3 py-2 pr-8 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors';
-
-const INPUT_CLASS =
-  'w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors';
-
 const Chevron = () => (
-  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400">
+  <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--rh-stone)' }}>
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M2 4l4 4 4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   </div>
 );
@@ -54,7 +48,7 @@ export default function SelectWithOther({
           value={selectValue}
           onChange={handleSelect}
           required={required && !otherMode}
-          className={SELECT_CLASS}
+          className="rh-field rh-field--select"
         >
           <option value="" disabled>
             {placeholder}
@@ -77,7 +71,7 @@ export default function SelectWithOther({
           placeholder={customPlaceholder}
           required={required}
           autoFocus
-          className={INPUT_CLASS}
+          className="rh-field"
         />
       )}
     </div>

@@ -1,25 +1,71 @@
 @import "tailwindcss";
 
-@variant dark (&:where(.dark, .dark *));
+/* Raw House design system — tokens, fonts, compiled component CSS. */
+@import "rawhouse-ds/styles.css";
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ------------------------------------------------------------------
+   Brand canvas
+   The app adopts the rawhouseathens.gr light section: a warm-stone
+   page with chunky Manrope type. Visual identity comes from the DS
+   primitives (Surface / Text / Button / Pill); Tailwind is kept for
+   layout only (flex / grid / spacing / responsive).
+   ------------------------------------------------------------------ */
 
 :root {
-  --background: #fafafa;
-  --foreground: #0a0a0a;
+  --background: var(--rh-cream);
+  --foreground: var(--rh-black);
 }
 
 html {
-  transition: background-color 0.15s ease, color 0.15s ease;
+  background: var(--background);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--rh-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Brand form field — DS has no input primitive, so fields share the
+   chunky-bordered, Manrope look via this helper. */
+.rh-field {
+  width: 100%;
+  font-family: var(--rh-font);
+  font-size: var(--rh-fs-small);
+  font-weight: var(--rh-weight-semibold);
+  color: var(--rh-black);
+  background: var(--rh-white);
+  border: var(--rh-border-width) solid var(--rh-black);
+  border-radius: var(--rh-r-md);
+  padding: 10px 14px;
+  transition: box-shadow var(--rh-dur) var(--rh-ease), border-color var(--rh-dur) var(--rh-ease);
+}
+
+.rh-field::placeholder {
+  color: var(--rh-muted);
+  font-weight: var(--rh-weight-regular);
+}
+
+.rh-field:focus {
+  outline: none;
+  border-color: var(--rh-coral);
+  box-shadow: 0 0 0 3px rgba(248, 72, 94, 0.25);
+}
+
+/* Native <select> chevron room. */
+.rh-field--select {
+  appearance: none;
+  padding-right: 36px;
+}
+
+.rh-label {
+  display: block;
+  font-family: var(--rh-font);
+  font-size: var(--rh-fs-label);
+  font-weight: var(--rh-weight-bold);
+  letter-spacing: var(--rh-track-label);
+  text-transform: uppercase;
+  color: var(--rh-stone);
+  margin-bottom: 8px;
 }

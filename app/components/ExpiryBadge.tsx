@@ -2,11 +2,13 @@
 
 import { getDaysUntilExpiry, getExpiryStatus } from '@/lib/utils';
 
-const styles = {
-  expired: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-400',
-  urgent: 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-400',
-  warning: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400',
-  good: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400',
+/* DS has no yellow Surface tone, so expiry status keeps a token-styled
+   chip to preserve the coral / yellow / green severity scale. */
+const TONES: Record<string, { bg: string; fg: string }> = {
+  expired: { bg: 'var(--rh-coral)', fg: 'var(--rh-white)' },
+  urgent: { bg: 'var(--rh-coral)', fg: 'var(--rh-white)' },
+  warning: { bg: 'var(--rh-yellow)', fg: 'var(--rh-black)' },
+  good: { bg: 'var(--rh-green)', fg: 'var(--rh-black)' },
 };
 
 export default function ExpiryBadge({
@@ -22,27 +24,25 @@ export default function ExpiryBadge({
   if (status === null) return null;
 
   const label =
-    status === 'expired'
-      ? 'Expired'
-      : days === 0
-        ? 'Expires today'
-        : `${days}d left`;
+    status === 'expired' ? 'Expired' : days === 0 ? 'Expires today' : `${days}d left`;
+  const tone = TONES[status];
 
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium ${styles[status]} ${className}`}
+      className={`inline-flex items-center self-start ${className}`}
+      style={{
+        background: tone.bg,
+        color: tone.fg,
+        border: 'var(--rh-border-width) solid var(--rh-black)',
+        borderRadius: 'var(--rh-r-pill)',
+        padding: '3px 12px',
+        fontFamily: 'var(--rh-font)',
+        fontSize: 'var(--rh-fs-label)',
+        fontWeight: 'var(--rh-weight-bold)',
+        letterSpacing: 'var(--rh-track-label)',
+        textTransform: 'uppercase',
+      }}
     >
-      <span
-        className={`w-1.5 h-1.5 rounded-full ${
-          status === 'expired'
-            ? 'bg-red-500'
-            : status === 'urgent'
-              ? 'bg-orange-500'
-              : status === 'warning'
-                ? 'bg-amber-500'
-                : 'bg-emerald-500'
-        }`}
-      />
       {label}
     </span>
   );

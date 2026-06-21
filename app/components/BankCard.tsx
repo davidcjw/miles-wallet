@@ -1,20 +1,21 @@
 'use client';
 
+import { Surface, Text } from 'rawhouse-ds';
 import { BankAccount } from '@/types';
 import { CONVERSION_RATES } from '@/lib/constants';
 import { milesFromPoints, fmt } from '@/lib/utils';
 import ExpiryBadge from './ExpiryBadge';
 
-const ACCENT_COLORS = [
-  'bg-blue-500',
-  'bg-violet-500',
-  'bg-emerald-500',
-  'bg-rose-500',
-  'bg-amber-500',
-  'bg-cyan-500',
-  'bg-pink-500',
-  'bg-indigo-500',
+const BRAND_ACCENTS = [
+  'var(--rh-coral)',
+  'var(--rh-green)',
+  'var(--rh-purple)',
+  'var(--rh-yellow)',
+  'var(--rh-black)',
 ];
+
+const ICON_BTN =
+  'p-1.5 rounded-full transition-colors hover:bg-[color:var(--rh-cream)] opacity-0 group-hover:opacity-100';
 
 interface Props {
   account: BankAccount;
@@ -27,77 +28,82 @@ interface Props {
 export default function BankCard({ account, index, selectedProgramme, onEdit, onDelete }: Props) {
   const rate = CONVERSION_RATES[account.bankName]?.[selectedProgramme];
   const miles = rate ? milesFromPoints(account.points, rate) : null;
-  const accent = ACCENT_COLORS[index % ACCENT_COLORS.length];
+  const accent = BRAND_ACCENTS[index % BRAND_ACCENTS.length];
 
   return (
-    <div className="group bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 flex flex-col gap-3 hover:shadow-sm transition-shadow">
+    <Surface
+      tone="white"
+      radius="xl"
+      sticker
+      bordered
+      className="group flex flex-col gap-3"
+      style={{ padding: 20 }}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2.5">
-          <span className={`w-2 h-2 rounded-full ${accent} mt-0.5 shrink-0`} />
+          <span
+            style={{
+              width: 12,
+              height: 12,
+              borderRadius: 'var(--rh-r-pill)',
+              background: accent,
+              border: 'var(--rh-border-width) solid var(--rh-black)',
+              flexShrink: 0,
+              marginTop: 4,
+            }}
+          />
           <div>
-            <p className="font-semibold text-neutral-900 dark:text-neutral-100 leading-tight">
+            <Text as="p" size="lead" weight="extrabold" style={{ lineHeight: 1.1 }}>
               {account.bankName}
-            </p>
+            </Text>
             {account.cardName && (
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">{account.cardName}</p>
+              <Text as="p" size="small" tone="muted" style={{ marginTop: 2 }}>
+                {account.cardName}
+              </Text>
             )}
           </div>
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button
-            onClick={() => onEdit(account)}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-            aria-label="Edit"
-          >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path
-                d="M9.5 1.5l2 2-8 8H1.5v-2l8-8zM8 3l2 2"
-                stroke="currentColor"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+        <div className="flex gap-1">
+          <button onClick={() => onEdit(account)} className={ICON_BTN} aria-label="Edit">
+            <svg width="14" height="14" viewBox="0 0 13 13" fill="none">
+              <path d="M9.5 1.5l2 2-8 8H1.5v-2l8-8zM8 3l2 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <button
             onClick={() => onDelete(account.id)}
-            className="p-1.5 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors"
+            className={`${ICON_BTN} hover:text-[color:var(--rh-coral)]`}
             aria-label="Delete"
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-              <path
-                d="M2 3.5h9M4.5 3.5V2.5h4v1M5 6v4M8 6v4M2.5 3.5l.5 7.5h7l.5-7.5"
-                stroke="currentColor"
-                strokeWidth="1.3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
+            <svg width="14" height="14" viewBox="0 0 13 13" fill="none">
+              <path d="M2 3.5h9M4.5 3.5V2.5h4v1M5 6v4M8 6v4M2.5 3.5l.5 7.5h7l.5-7.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
       </div>
 
       <div>
-        <p className="text-2xl font-bold tabular-nums tracking-tight text-neutral-900 dark:text-neutral-50">
-          {fmt(account.points)}
-          <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400 ml-1.5">pts</span>
-        </p>
+        <Text as="p" size="display" weight="extrabold" style={{ lineHeight: 1 }}>
+          <span className="tabular-nums">{fmt(account.points)}</span>
+          <Text as="span" size="small" tone="muted" weight="bold" style={{ marginLeft: 6 }}>
+            pts
+          </Text>
+        </Text>
         {miles !== null ? (
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-0.5">
+          <Text as="p" size="small" tone="muted" style={{ marginTop: 4 }}>
             ≈{' '}
-            <span className="font-medium text-neutral-700 dark:text-neutral-300">
+            <Text as="span" size="small" weight="extrabold" tone="green">
               {fmt(miles)} {selectedProgramme} miles
-            </span>{' '}
-            <span className="text-xs">({rate}:1)</span>
-          </p>
+            </Text>{' '}
+            <Text as="span" size="small" tone="muted">({rate}:1)</Text>
+          </Text>
         ) : (
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">
+          <Text as="p" size="small" tone="muted" style={{ marginTop: 4 }}>
             No {selectedProgramme} transfer rate
-          </p>
+          </Text>
         )}
       </div>
 
       <ExpiryBadge expiryDate={account.expiryDate} />
-    </div>
+    </Surface>
   );
 }

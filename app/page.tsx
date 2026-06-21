@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Surface, Text, Heading, Button } from 'rawhouse-ds';
 import { useWallet } from '@/hooks/useWallet';
 import { exportToCSV } from '@/lib/csv';
 import { BankAccount, LoyaltyAccount } from '@/types';
@@ -15,6 +16,62 @@ import SyncModal from '@/components/SyncModal';
 type BankModal = { open: false } | { open: true; editing?: BankAccount };
 type LoyaltyModal = { open: false } | { open: true; editing?: LoyaltyAccount };
 
+function PlusIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ marginRight: 6 }}>
+      <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SectionHead({
+  eyebrow,
+  count,
+  noun,
+  onAdd,
+  variant,
+}: {
+  eyebrow: string;
+  count: number;
+  noun: [string, string];
+  onAdd: () => void;
+  variant: 'coral' | 'green';
+}) {
+  return (
+    <div className="flex items-end justify-between mb-4">
+      <Heading level="h" eyebrow={`${count} ${count === 1 ? noun[0] : noun[1]}`} eyebrowTone="muted">
+        {eyebrow}
+      </Heading>
+      <Button variant={variant} size="sm" onClick={onAdd}>
+        <PlusIcon />
+        Add
+      </Button>
+    </div>
+  );
+}
+
+function AddTile({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full"
+      style={{
+        padding: '32px 16px',
+        borderRadius: 'var(--rh-r-xl)',
+        border: '2px dashed var(--rh-muted)',
+        background: 'transparent',
+        color: 'var(--rh-stone)',
+        fontFamily: 'var(--rh-font)',
+        fontWeight: 'var(--rh-weight-bold)',
+        fontSize: 'var(--rh-fs-small)',
+        cursor: 'pointer',
+      }}
+    >
+      + {label}
+    </button>
+  );
+}
+
 export default function Page() {
   const wallet = useWallet();
   const [bankModal, setBankModal] = useState<BankModal>({ open: false });
@@ -26,7 +83,7 @@ export default function Page() {
   const isEmpty = wallet.banks.length === 0 && wallet.loyalty.length === 0;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen">
       <Header
         banks={wallet.banks}
         loyalty={wallet.loyalty}
@@ -35,6 +92,7 @@ export default function Page() {
       />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+        <h1 className="sr-only">Miles Wallet — track bank credit card points and loyalty miles</h1>
         <SummaryStats
           banks={wallet.banks}
           loyalty={wallet.loyalty}
@@ -43,68 +101,59 @@ export default function Page() {
         />
 
         {isEmpty && (
-          <div className="text-center py-16">
-            <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-950 flex items-center justify-center mx-auto mb-4">
+          <Surface
+            tone="white"
+            radius="xl"
+            sticker
+            bordered
+            pad={6}
+            className="flex flex-col items-center text-center"
+            style={{ marginTop: 8 }}
+          >
+            <Surface
+              tone="coral"
+              radius="lg"
+              bordered
+              className="flex items-center justify-center"
+              style={{ width: 56, height: 56, marginBottom: 20 }}
+            >
               <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <rect x="3" y="7" width="22" height="16" rx="3" stroke="#3b82f6" strokeWidth="1.8" />
-                <path d="M3 12h22" stroke="#3b82f6" strokeWidth="1.8" />
-                <path d="M8 17h4M18 17h2" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" />
+                <rect x="3" y="7" width="22" height="16" rx="3" stroke="white" strokeWidth="2" />
+                <path d="M3 12h22" stroke="white" strokeWidth="2" />
+                <path d="M8 17h4M18 17h2" stroke="white" strokeWidth="2" strokeLinecap="round" />
               </svg>
-            </div>
-            <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100 mb-2">
-              Your wallet is empty
-            </h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-6 max-w-xs mx-auto">
+            </Surface>
+            <Heading level="h" center>Your wallet is empty</Heading>
+            <Text size="body" tone="muted" center className="max-w-xs" style={{ margin: '12px 0 24px' }}>
               Add your bank points and loyalty miles to start tracking them in one place.
-            </p>
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => setBankModal({ open: true })}
-                className="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-              >
+            </Text>
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button variant="coral" onClick={() => setBankModal({ open: true })}>
                 Add Bank Points
-              </button>
-              <button
-                onClick={() => setLoyaltyModal({ open: true })}
-                className="px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-              >
+              </Button>
+              <Button variant="outline" onClick={() => setLoyaltyModal({ open: true })}>
                 Add Loyalty Miles
-              </button>
+              </Button>
             </div>
-          </div>
+          </Surface>
         )}
 
         {!isEmpty && (
-          <div className="space-y-8">
+          <div className="space-y-10">
             {/* Bank Accounts */}
             <section>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Bank Points</h2>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {wallet.banks.length} {wallet.banks.length === 1 ? 'account' : 'accounts'}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setBankModal({ open: true })}
-                  className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-                >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  </svg>
-                  Add
-                </button>
-              </div>
+              <SectionHead
+                eyebrow="Bank Points"
+                count={wallet.banks.length}
+                noun={['account', 'accounts']}
+                onAdd={() => setBankModal({ open: true })}
+                variant="coral"
+              />
 
               {wallet.banks.length === 0 ? (
-                <button
-                  onClick={() => setBankModal({ open: true })}
-                  className="w-full py-8 rounded-2xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 text-sm text-neutral-400 hover:border-blue-300 hover:text-blue-500 dark:hover:border-blue-800 dark:hover:text-blue-400 transition-colors"
-                >
-                  + Add your first bank account
-                </button>
+                <AddTile label="Add your first bank account" onClick={() => setBankModal({ open: true })} />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {wallet.banks.map((b, i) => (
                     <BankCard
                       key={b.id}
@@ -121,33 +170,18 @@ export default function Page() {
 
             {/* Loyalty Accounts */}
             <section>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Loyalty Miles</h2>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    {wallet.loyalty.length} {wallet.loyalty.length === 1 ? 'programme' : 'programmes'}
-                  </p>
-                </div>
-                <button
-                  onClick={() => setLoyaltyModal({ open: true })}
-                  className="flex items-center gap-1.5 text-sm font-medium px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-                >
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M6 1v10M1 6h10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                  </svg>
-                  Add
-                </button>
-              </div>
+              <SectionHead
+                eyebrow="Loyalty Miles"
+                count={wallet.loyalty.length}
+                noun={['programme', 'programmes']}
+                onAdd={() => setLoyaltyModal({ open: true })}
+                variant="green"
+              />
 
               {wallet.loyalty.length === 0 ? (
-                <button
-                  onClick={() => setLoyaltyModal({ open: true })}
-                  className="w-full py-8 rounded-2xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 text-sm text-neutral-400 hover:border-blue-300 hover:text-blue-500 dark:hover:border-blue-800 dark:hover:text-blue-400 transition-colors"
-                >
-                  + Add your first loyalty programme
-                </button>
+                <AddTile label="Add your first loyalty programme" onClick={() => setLoyaltyModal({ open: true })} />
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                   {wallet.loyalty.map((l) => (
                     <LoyaltyCard
                       key={l.id}
@@ -161,22 +195,14 @@ export default function Page() {
             </section>
 
             {/* Mobile export */}
-            <div className="sm:hidden pt-2 pb-4">
-              <button
+            <div className="sm:hidden">
+              <Button
+                variant="black"
+                className="w-full"
                 onClick={() => exportToCSV(wallet.banks, wallet.loyalty, wallet.selectedProgramme)}
-                className="w-full flex items-center justify-center gap-2 py-2.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                  <path
-                    d="M7 1v8M4 6l3 3 3-3M2 10v1.5A1.5 1.5 0 003.5 13h7A1.5 1.5 0 0012 11.5V10"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
                 Export to CSV
-              </button>
+              </Button>
             </div>
           </div>
         )}

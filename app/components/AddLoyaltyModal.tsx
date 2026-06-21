@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Surface, Text, Button, IconButton } from 'rawhouse-ds';
 import { LoyaltyAccount } from '@/types';
 import { SUGGESTED_LOYALTY_PROGRAMMES } from '@/lib/constants';
 import { uid } from '@/lib/utils';
@@ -11,9 +12,6 @@ interface Props {
   onSave: (a: LoyaltyAccount) => void;
   onClose: () => void;
 }
-
-const INPUT_CLASS =
-  'w-full px-3 py-2 text-sm rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-colors';
 
 export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
   const [programmeName, setProgrammeName] = useState(initial?.programmeName ?? '');
@@ -33,29 +31,25 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.5)' }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-md bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 overflow-hidden">
-        <div className="px-6 py-4 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-          <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">
+      <Surface tone="white" radius="xl" bordered sticker className="w-full max-w-md" style={{ padding: 0 }}>
+        <div className="flex items-center justify-between" style={{ padding: '20px 24px', borderBottom: 'var(--rh-border-width) solid var(--rh-black)' }}>
+          <Text as="h2" size="title" weight="extrabold">
             {initial ? 'Edit Loyalty Account' : 'Add Loyalty Miles'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
-          >
+          </Text>
+          <IconButton aria-label="Close" variant="outline" size={36} onClick={onClose}>
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
-          </button>
+          </IconButton>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" style={{ padding: 24 }}>
           <div>
-            <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
-              Loyalty Programme
-            </label>
+            <label className="rh-label">Loyalty Programme</label>
             <SelectWithOther
               value={programmeName}
               onChange={setProgrammeName}
@@ -67,9 +61,7 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
-              Miles Balance
-            </label>
+            <label className="rh-label">Miles Balance</label>
             <input
               type="number"
               min={0}
@@ -77,40 +69,30 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
               onChange={(e) => setMiles(Number(e.target.value))}
               placeholder="0"
               required
-              className={INPUT_CLASS}
+              className="rh-field"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-neutral-600 dark:text-neutral-400 mb-1.5">
-              Miles Expiry Date
-              <span className="font-normal text-neutral-400 ml-1">(optional)</span>
-            </label>
+            <label className="rh-label">Miles Expiry Date (optional)</label>
             <input
               type="date"
               value={expiryDate}
               onChange={(e) => setExpiryDate(e.target.value)}
-              className={INPUT_CLASS}
+              className="rh-field"
             />
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 text-sm font-medium rounded-lg border border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
-            >
+            <Button as="button" type="button" variant="outline" className="flex-1" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors"
-            >
+            </Button>
+            <Button as="button" type="submit" variant="green" className="flex-1">
               {initial ? 'Save Changes' : 'Add Miles'}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
+      </Surface>
     </div>
   );
 }

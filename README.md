@@ -3,9 +3,13 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![AgentReady Score](https://agentready.davidcjw.com/api/badge/davidcjw/miles-wallet)](https://agentready.davidcjw.com/results/davidcjw/miles-wallet)
 
-A minimalist web app for tracking bank credit card points and loyalty programme miles — all in one place, stored locally in your browser.
+A bold web app for tracking bank credit card points and loyalty programme miles — all in one place, stored locally in your browser.
 
 **Live:** https://miles-wallet.davidcjw.com
+
+<p align="center">
+  <img src="docs/screenshot.png" alt="Miles Wallet dashboard — total miles hero with bank and loyalty cards" width="720">
+</p>
 
 ## Features
 
@@ -13,8 +17,8 @@ A minimalist web app for tracking bank credit card points and loyalty programme 
 - **Bank Points** — Add multiple bank accounts (Bank, Card Name, Points, Expiry); conversion rates auto-applied from a built-in lookup table for 8 SG banks
 - **Loyalty Miles** — Track direct miles balances (e.g. KrisFlyer, Asia Miles) with expiry dates
 - **Total Miles Dashboard** — Hero card showing total miles equivalent (bank conversions + loyalty balance) for the selected programme
-- **Expiry Alerts** — Color-coded expiry badges (green → amber → orange → red as expiry approaches)
-- **Dark Mode** — Toggleable dark/light theme, persisted to `localStorage`
+- **Expiry Alerts** — Color-coded expiry pills (green → yellow → coral as expiry approaches)
+- **Bold Design System** — Built on [`rawhouse-ds`](https://github.com/davidcjw/rawhouse-ds): chunky sticker-shadow cards, Manrope display type, coral + green accents
 - **CSV Export** — Download all your data as a spreadsheet
 - **QR Sync** — Generate a QR code on one device and scan it on another to transfer your wallet data
 - **Zero backend** — All data lives in your browser's `localStorage`; nothing is sent to any server
@@ -23,7 +27,8 @@ A minimalist web app for tracking bank credit card points and loyalty programme 
 
 - **Next.js 16** (App Router)
 - **React 19**
-- **Tailwind CSS v4**
+- **Tailwind CSS v4** (layout utilities)
+- **[rawhouse-ds](https://github.com/davidcjw/rawhouse-ds)** design system (tokens, Manrope, UI primitives)
 - **TypeScript**
 
 ## Getting Started

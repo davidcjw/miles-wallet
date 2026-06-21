@@ -17,13 +17,11 @@
 | `app/lib/constants.ts` | Suggested banks, loyalty programmes, default conversion rates |
 | `app/lib/csv.ts` | CSV export logic |
 | `app/hooks/useWallet.ts` | All wallet state, reads/writes `localStorage` |
-| `app/hooks/useDarkMode.ts` | Dark mode toggle, syncs `.dark` class on `<html>` |
 | `app/page.tsx` | Main client page — mounts all sections and modals |
 
-## Tailwind v4 Dark Mode
+## Design System
 
-Dark mode uses a `.dark` class on `<html>`. Configured via `@variant dark` in `globals.css`.
-The inline script in `layout.tsx` sets `.dark` before hydration to prevent flash.
+UI is built on **`rawhouse-ds`** (installed via `file:../design-systems/rawhouse-ds`). Tokens, Manrope font and component CSS load via `@import "rawhouse-ds/styles.css"` in `globals.css`; primitives are imported per-component (`Surface`, `Text`, `Button`, `IconButton`, `Heading`, `Eyebrow`). Use `--rh-*` tokens (not Tailwind colour utilities) for brand colour/border/radius/shadow; Tailwind is layout-only. Native inputs use the `.rh-field` / `.rh-label` helpers. See `AGENTS.md` for full details. There is **no dark mode** — the DS uses fixed brand tones.
 
 ## Conventions
 

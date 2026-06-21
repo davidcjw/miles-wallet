@@ -1,0 +1,4 @@
+Contact: https://github.com/davidcjw/miles-wallet/security/advisories/new
+Expires: 2027-06-22T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://miles-wallet.davidcjw.com/.well-known/security.txt
