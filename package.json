@@ -12,7 +12,7 @@
     "jsqr": "^1.4.0",
     "next": "16.2.6",
     "qrcode.react": "^4.2.0",
-    "rawhouse-ds": "file:../design-systems/rawhouse-ds",
+    "rawhouse-ds": "file:./vendor/rawhouse-ds",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

@@ -1,0 +1,24 @@
+{
+  "name": "rawhouse-ds",
+  "version": "0.1.0",
+  "description": "Vendored build of rawhouse-ds (source: github.com/davidcjw/rawhouse-ds). Compiled dist only — regenerate via scripts/sync-ds.sh.",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/rawhouse-ds.cjs",
+  "module": "./dist/rawhouse-ds.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/rawhouse-ds.js",
+      "require": "./dist/rawhouse-ds.cjs"
+    },
+    "./styles.css": "./dist/rawhouse-ds.css"
+  },
+  "files": ["dist"],
+  "sideEffects": ["**/*.css"],
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  }
+}

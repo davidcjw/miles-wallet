@@ -21,7 +21,7 @@
 
 ## Design System
 
-UI is built on **`rawhouse-ds`** (installed via `file:../design-systems/rawhouse-ds`). Tokens, Manrope font and component CSS load via `@import "rawhouse-ds/styles.css"` in `globals.css`; primitives are imported per-component (`Surface`, `Text`, `Button`, `IconButton`, `Heading`, `Eyebrow`). Use `--rh-*` tokens (not Tailwind colour utilities) for brand colour/border/radius/shadow; Tailwind is layout-only. Native inputs use the `.rh-field` / `.rh-label` helpers. See `AGENTS.md` for full details. There is **no dark mode** — the DS uses fixed brand tones.
+UI is built on **`rawhouse-ds`** (vendored at `vendor/rawhouse-ds`, dependency `file:./vendor/rawhouse-ds`; regenerate via `./scripts/sync-ds.sh`). Tokens, Manrope font and component CSS load via `@import "rawhouse-ds/styles.css"` in `globals.css`; primitives are imported per-component (`Surface`, `Text`, `Button`, `IconButton`, `Heading`, `Eyebrow`). Use `--rh-*` tokens (not Tailwind colour utilities) for brand colour/border/radius/shadow; Tailwind is layout-only. Native inputs use the `.rh-field` / `.rh-label` helpers. See `AGENTS.md` for full details. There is **no dark mode** — the DS uses fixed brand tones.
 
 ## Conventions
 
