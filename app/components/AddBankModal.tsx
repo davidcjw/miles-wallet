@@ -6,7 +6,6 @@ import { BankAccount } from '@/types';
 import { SUGGESTED_BANKS, CARD_SUGGESTIONS } from '@/lib/constants';
 import { uid } from '@/lib/utils';
 import SelectWithOther from './SelectWithOther';
-import DateField from './DateField';
 
 interface Props {
   initial?: BankAccount;
@@ -106,7 +105,12 @@ export default function AddBankModal({ initial, onSave, onClose }: Props) {
 
           <div>
             <label className="rh-label">Points Expiry Date (optional)</label>
-            <DateField value={expiryDate} onChange={setExpiryDate} />
+            <input
+              type="date"
+              value={expiryDate}
+              onChange={(e) => setExpiryDate(e.target.value)}
+              className="rh-field rh-field--date"
+            />
           </div>
 
           <div className="flex gap-3 pt-2">
