@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import Pwa from '@/components/Pwa';
 
 const SITE_URL = 'https://miles-wallet.davidcjw.com';
 const DESCRIPTION =
@@ -10,6 +11,20 @@ export const metadata: Metadata = {
   title: 'Miles Wallet — track bank points & loyalty miles',
   description: DESCRIPTION,
   applicationName: 'Miles Wallet',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Miles Wallet',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   alternates: { canonical: '/' },
   keywords: [
     'miles tracker',
@@ -40,6 +55,7 @@ export const viewport: Viewport = {
   themeColor: '#000000',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 };
 
 const jsonLd = {
@@ -62,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         {children}
+        <Pwa />
       </body>
     </html>
   );

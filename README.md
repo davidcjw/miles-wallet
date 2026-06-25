@@ -21,6 +21,7 @@ A bold web app for tracking bank credit card points and loyalty programme miles 
 - **Bold Design System** — Built on [`rawhouse-ds`](https://github.com/davidcjw/rawhouse-ds): chunky sticker-shadow cards, Manrope display type, coral + green accents
 - **CSV Export** — Download all your data as a spreadsheet
 - **QR Sync** — Generate a QR code on one device and scan it on another to transfer your wallet data
+- **Installable PWA** — Add it to your home screen and launch it like a native app. A service worker caches the app shell, so your wallet keeps working fully offline
 - **Zero backend** — All data lives in your browser's `localStorage`; nothing is sent to any server
 
 ## Tech Stack
@@ -39,6 +40,17 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+> **Note:** The service worker only registers in production builds (to avoid dev HMR conflicts). To test PWA install/offline behaviour locally, run `npm run build && npm start` and open the served URL.
+
+## Install as an App
+
+Miles Wallet is a Progressive Web App:
+
+- **Desktop / Android (Chrome, Edge):** an "Install Miles Wallet" prompt appears, or use the browser's install button in the address bar.
+- **iOS (Safari):** tap **Share → Add to Home Screen**.
+
+Once installed it launches standalone and works **offline** — the service worker (`public/sw.js`) precaches the app shell and caches static assets at runtime. Since all data is in `localStorage`, the full app is usable with no connection.
 
 ## Data Model
 

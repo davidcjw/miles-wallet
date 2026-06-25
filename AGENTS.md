@@ -36,6 +36,16 @@ Visual identity comes from **`rawhouse-ds`** — a standalone React design syste
 ### No dark mode
 There is **no dark-mode toggle** — the DS uses fixed brand tones (high-contrast black & white *sections*, not a switchable neutral theme). `useDarkMode` and the pre-hydration theme script were removed when adopting the DS.
 
+### Progressive Web App
+The app is an installable, offline-capable PWA. It deliberately implements **only the install + offline pillars** — there are **no push notifications** (push needs a backend / stored subscriptions, which contradicts the `localStorage`-only, no-API-route architecture).
+
+- **Manifest:** `app/manifest.ts` (served at `/manifest.webmanifest`) — `display: standalone`, theme `#000000`, four PNG icons (`any` + `maskable`, 192/512).
+- **Icons:** `public/icon-{192,512}.png`, `public/icon-maskable-{192,512}.png`, `public/apple-touch-icon.png` — on-brand coral card glyph (mirrors the Header logo). Regenerate with the sharp script pattern in commit history if the brand mark changes; maskable variants keep the card inside the 80% safe zone.
+- **Service worker:** `public/sw.js` — precaches the app shell on install; **network-first** for navigations (falls back to cached `/`), **stale-while-revalidate** for hashed static assets and the manifest. Bump `CACHE_VERSION` on any SW change to invalidate old caches. Same-origin GET only; cross-origin and non-GET pass through untouched.
+- **Registration + UI:** `app/components/Pwa.tsx` (mounted in `layout.tsx`) registers the SW **in production only** (avoids dev HMR conflicts), shows a dismissible install prompt (`beforeinstallprompt` on Chromium, manual Share→Add hint on iOS Safari), and surfaces an "update available → Refresh" banner when a new SW is waiting.
+- **Headers/CSP:** `next.config.ts` serves `/sw.js` with `no-cache` + `Service-Worker-Allowed: /`, and the CSP allows `worker-src 'self'` / `manifest-src 'self'`.
+- **Testing locally:** the SW is prod-only, so use `npm run build && npm start` — `localhost` is a secure context, so install/offline work there.
+
 ### Path Alias
 `@/*` resolves to `./app/*` — configured in `tsconfig.json` (not the project root).
 
@@ -49,6 +59,10 @@ There is **no dark-mode toggle** — the DS uses fixed brand tones (high-contras
 | `app/lib/csv.ts` | CSV export — accepts `selectedProgramme` as third arg |
 | `app/hooks/useWallet.ts` | All wallet state + `selectedProgramme`; reads/writes `localStorage` |
 | `app/page.tsx` | Main client page — mounts all sections and modals |
+| `app/layout.tsx` | Root layout — metadata (icons, `appleWebApp`, manifest), mounts `<Pwa />` |
+| `app/manifest.ts` | Web app manifest (`/manifest.webmanifest`) |
+| `public/sw.js` | Service worker — offline app-shell precache + runtime caching |
+| `app/components/Pwa.tsx` | SW registration (prod), install prompt, update banner (client) |
 | `app/components/SummaryStats.tsx` | Hero card with programme selector and total miles |
 | `app/components/BankCard.tsx` | Single bank account card — looks up conversion rate at render |
 | `app/components/AddBankModal.tsx` | Simplified modal: Bank + Card + Points + Expiry only |

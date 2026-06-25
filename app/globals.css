@@ -69,3 +69,15 @@ body {
   color: var(--rh-stone);
   margin-bottom: 8px;
 }
+
+/* Tailwind v4 keeps its utilities in a cascade layer, but rawhouse-ds ships
+   unlayered CSS — so `.rh-surface { display: block }` outranks the layered
+   `.flex` utility and silently breaks flex layout (icon tiles end up corner-
+   aligned, rows stop laying out). Re-assert the display utility with an
+   unlayered, higher-specificity rule wherever a Surface opts into it. */
+.rh-surface.flex {
+  display: flex;
+}
+.rh-surface.inline-flex {
+  display: inline-flex;
+}
