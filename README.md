@@ -11,6 +11,21 @@ A bold web app for tracking bank credit card points and loyalty programme miles 
   <img src="docs/screenshot.png" alt="Miles Wallet dashboard — total miles hero with bank and loyalty cards" width="720">
 </p>
 
+## Table of Contents
+
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Install as an App](#install-as-an-app)
+- [Data Model](#data-model)
+- [Conversion Rates](#conversion-rates)
+- [Deployment](#deployment)
+- [Privacy](#privacy)
+- [Contributing](#contributing)
+- [Code of Conduct](#code-of-conduct)
+- [License](#license)
+- [Acknowledgements](#acknowledgements)
+
 ## Features
 
 - **Programme Selector** — Choose a loyalty programme (KrisFlyer, Asia Miles, Enrich Miles, Avios, Flying Blue) and see all your bank points converted to it in real time
@@ -113,3 +128,8 @@ By participating you agree to uphold a welcoming, harassment-free environment.
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for details.
+
+## Acknowledgements
+
+- UI built on the [`rawhouse-ds`](https://github.com/davidcjw/rawhouse-ds) design system
+- Conversion rates compiled from Singapore bank transfer-partner pages
