@@ -6,6 +6,7 @@ import { LoyaltyAccount } from '@/types';
 import { SUGGESTED_LOYALTY_PROGRAMMES } from '@/lib/constants';
 import { uid } from '@/lib/utils';
 import SelectWithOther from './SelectWithOther';
+import DateField from './DateField';
 
 interface Props {
   initial?: LoyaltyAccount;
@@ -75,12 +76,7 @@ export default function AddLoyaltyModal({ initial, onSave, onClose }: Props) {
 
           <div>
             <label className="rh-label">Miles Expiry Date (optional)</label>
-            <input
-              type="date"
-              value={expiryDate}
-              onChange={(e) => setExpiryDate(e.target.value)}
-              className="rh-field"
-            />
+            <DateField value={expiryDate} onChange={setExpiryDate} />
           </div>
 
           <div className="flex gap-3 pt-2">

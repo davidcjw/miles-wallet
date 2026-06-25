@@ -70,6 +70,32 @@ body {
   margin-bottom: 8px;
 }
 
+/* Date field — native <input type="date"> shows no placeholder on iOS Safari
+   and centre-aligns its value, so an empty optional date reads as a blank,
+   broken box. `DateField` overlays a muted hint while empty; these rules
+   left-align the value and hide the browser's own empty-state digits so only
+   the overlay shows (and the real value shows once one is picked). */
+.rh-date {
+  position: relative;
+}
+.rh-date__ph {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--rh-muted);
+  font-family: var(--rh-font);
+  font-size: var(--rh-fs-small);
+  font-weight: var(--rh-weight-regular);
+  pointer-events: none;
+}
+.rh-field--date::-webkit-date-and-time-value {
+  text-align: left;
+}
+.rh-field--date:not(.has-value)::-webkit-datetime-edit {
+  color: transparent;
+}
+
 /* Tailwind v4 keeps its utilities in a cascade layer, but rawhouse-ds ships
    unlayered CSS — so `.rh-surface { display: block }` outranks the layered
    `.flex` utility and silently breaks flex layout (icon tiles end up corner-
