@@ -1,5 +1,6 @@
 # Miles Wallet
 
+[![CI](https://github.com/davidcjw/miles-wallet/actions/workflows/ci.yml/badge.svg)](https://github.com/davidcjw/miles-wallet/actions/workflows/ci.yml)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 [![AgentReady Score](https://agentready.davidcjw.com/api/badge/davidcjw/miles-wallet)](https://agentready.davidcjw.com/results/davidcjw/miles-wallet)
 

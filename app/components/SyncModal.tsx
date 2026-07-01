@@ -61,6 +61,8 @@ export default function SyncModal({ banks, loyalty, onImport, onClose }: Props) 
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas || video.readyState < video.HAVE_ENOUGH_DATA) {
+      // Intentional self-referencing rAF loop — scanLoop reschedules itself.
+      // eslint-disable-next-line react-hooks/immutability
       rafRef.current = requestAnimationFrame(scanLoop);
       return;
     }

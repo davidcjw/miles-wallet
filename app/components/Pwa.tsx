@@ -89,6 +89,9 @@ export default function Pwa() {
     const ua = navigator.userAgent;
     const isIOS = /iPad|iPhone|iPod/.test(ua);
     const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(ua);
+    // navigator is only available on the client, so this mount-time check must
+    // set state from within the effect (rule is a false positive here).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isIOS && isSafari) setShowIosHint(true);
 
     return () => {

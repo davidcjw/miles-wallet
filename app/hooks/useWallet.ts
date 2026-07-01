@@ -12,6 +12,9 @@ export function useWallet() {
   const [selectedProgramme, setSelectedProgramme] = useState('KrisFlyer');
   const [ready, setReady] = useState(false);
 
+  // One-time hydration from localStorage, which is unavailable during SSR, so
+  // the setState calls must happen in an effect (rule is a false positive here).
+  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     try {
       const raw = localStorage.getItem(KEY);
@@ -25,6 +28,7 @@ export function useWallet() {
     } catch {}
     setReady(true);
   }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (!ready) return;
